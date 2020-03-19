@@ -50,7 +50,7 @@ def ml_loop():
         # 3.3. Put the code here to handle the scene information
         if scene_info.ball[1] == 395:
             have_end_posx = False
-        if scene_info.ball[1] >= 147 and scene_info.ball[1] < 150:
+        if scene_info.ball[1] >= 143 and scene_info.ball[1] < 150:
             last_posx = scene_info.ball[0]
         if scene_info.ball[1] >= 150 and scene_info.ball[1] < 157:
             now_posx = scene_info.ball[0]
