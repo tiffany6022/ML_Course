@@ -9,6 +9,7 @@ from games.arkanoid.communication import ( \
 import math
 import random
 
+
 def ml_loop():
     """
     The main loop of the machine learning process
