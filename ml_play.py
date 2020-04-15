@@ -99,6 +99,9 @@ def ml_loop():
             # print(brick_y)
             if random.randint(0,3) == 0:
                 end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
+            else:
+                if end_posx % 5 == 0:
+                    end_posx += 1
             if brick_y >= 250:
                 end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
 
