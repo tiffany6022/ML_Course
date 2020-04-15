@@ -80,31 +80,31 @@ def ml_loop():
             # print(move_times)
             if speed_x > 0:    # right
                 end_posx = scene_info.ball[0] + move_times * abs(speed_x)
-                if end_posx > 195:
+                if end_posx > 195:          # RL
                     end_posx = 195 - (end_posx - 195)
-                    if end_posx < 0:
+                    if end_posx < 0:        # RLR
                         end_posx = abs(end_posx)
-                        if end_posx >  195:
+                        if end_posx >  195: # RLRL
                             end_posx = 195 - (end_posx - 195)
             elif speed_x < 0:  # left
                 end_posx = scene_info.ball[0] - move_times * abs(speed_x)
-                if end_posx < 0:
+                if end_posx < 0:            # LR
                     end_posx = abs(end_posx)
-                    if end_posx > 195:
+                    if end_posx > 195:      # LRL
                         end_posx = 195 - (end_posx - 195)
-                        if end_posx <  0:
+                        if end_posx <  0:   # LRLR
                             end_posx = abs(end_posx)
             have_end_posx = True
             # print(scene_info.ball, end_posx, speed_x)
             # print(brick_y)
-            if random.randint(0,1):
+            if random.randint(0,5) == 0:
                 end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
             if brick_y >= 250:
                 end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
 
         # 3.4. Send the instruction for this frame to the game process
         if not ball_served:
-            if random.randint(0,1):
+            if random.randint(0,1) == 0:
                 comm.send_instruction(scene_info.frame, PlatformAction.SERVE_TO_LEFT)
             else:
                 comm.send_instruction(scene_info.frame, PlatformAction.SERVE_TO_RIGHT)
