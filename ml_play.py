@@ -59,25 +59,17 @@ def ml_loop():
         if scene_info.ball[1] == 395 and not speed_y == 0:
             have_end_posx = False
             continue
-        brick_y = 0
-        for x in range(len(scene_info.bricks)):
-            if brick_y < scene_info.bricks[x][1]:
-                brick_y = scene_info.bricks[x][1]
-        for x in range(len(scene_info.hard_bricks)):
-            if brick_y < scene_info.hard_bricks[x][1]:
-                brick_y = scene_info.hard_bricks[x][1]
-        # print(brick_y)
         position.append(scene_info.ball)
         if len(position) == 2:
             speed_x = position[1][0] - position[0][0]
             speed_y = position[1][1] - position[0][1]
             del position[0]
         ball_down = speed_y > 0
-        if scene_info.ball[1] > random.randint(brick_y+30, brick_y+40) and (not have_end_posx) and ball_down:
+        if scene_info.ball[1] > random.randint(270,280) and (not have_end_posx) and ball_down:
             if not (abs(speed_x) == 7 or abs(speed_x) == 10):
                 continue
             move_times = math.ceil((395-scene_info.ball[1])/7)
-            # print(move_times)
+            # print(f"move_times:{move_times}")
             if speed_x > 0:    # right
                 end_posx = scene_info.ball[0] + move_times * abs(speed_x)
                 if end_posx > 195:          # RL
@@ -96,14 +88,11 @@ def ml_loop():
                             end_posx = abs(end_posx)
             have_end_posx = True
             # print(scene_info.ball, end_posx, speed_x)
-            # print(brick_y)
             if random.randint(0,3) == 0:
                 end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
             else:
                 if end_posx % 5 == 0:
                     end_posx += 1
-            if brick_y >= 250:
-                end_posx = end_posx + 5 - end_posx % 5  # platform moves +-5
 
         # 3.4. Send the instruction for this frame to the game process
         if not ball_served:
