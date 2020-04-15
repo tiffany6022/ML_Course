@@ -73,7 +73,7 @@ def ml_loop():
             speed_y = position[1][1] - position[0][1]
             del position[0]
         ball_down = speed_y > 0
-        if scene_info.ball[1] > (brick_y+30) and (not have_end_posx) and ball_down:
+        if scene_info.ball[1] > random.randint(brick_y+30, brick_y+40) and (not have_end_posx) and ball_down:
             if not (abs(speed_x) == 7 or abs(speed_x) == 10):
                 continue
             move_times = math.ceil((395-scene_info.ball[1])/7)
