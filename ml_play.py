@@ -59,6 +59,14 @@ def ml_loop():
         if scene_info.ball[1] == 395 and not speed_y == 0:
             have_end_posx = False
             continue
+        brick_y = 0
+        for x in range(len(scene_info.bricks)):
+            if brick_y < scene_info.bricks[x][1]:
+                brick_y = scene_info.bricks[x][1]
+        for x in range(len(scene_info.hard_bricks)):
+            if brick_y < scene_info.hard_bricks[x][1]:
+                brick_y = scene_info.hard_bricks[x][1]
+        # print(brick_y)
         position.append(scene_info.ball)
         if len(position) == 2:
             speed_x = position[1][0] - position[0][0]
