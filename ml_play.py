@@ -4,6 +4,7 @@ The template of the script for the machine learning process in game pingpong
 
 # Import the necessary modules and classes
 from mlgame.communication import ml as comm
+import math
 
 def ml_loop(side: str):
     """
@@ -19,13 +20,42 @@ def ml_loop(side: str):
     @param side The side which this script is executed for. Either "1P" or "2P".
     """
 
+
     # === Here is the execution order of the loop === #
     # 1. Put the initialization code here
     ball_served = False
+
+    def predict_ball(x, ball_position, ball_speed):
+    # print(scene_info)
+        pred = ball_position + (ball_speed*x)
+        x_speed = abs(ball_speed)
+        if pred < 0:
+            # print("<0")
+            remaining_x = x - math.ceil(ball_position / x_speed)
+            pred = remaining_x * x_speed
+            if pred > 195:
+                remaining_x = remaining_x - math.ceil(195 / x_speed)
+                pred = 195 - remaining_x * x_speed
+                if pred < 0:
+                    remaining_x = remaining_x - math.ceil(195 / x_speed)
+                    pred = remaining_x * x_speed
+        elif pred > 195:
+            # print(">195")
+            remaining_x = x - math.ceil((195 - ball_position) / x_speed)
+            pred = 195 - remaining_x * x_speed
+            if pred < 0:
+                remaining_x = remaining_x - math.ceil(195 / x_speed)
+                pred = remaining_x * x_speed
+                if pred > 195:
+                    remaining_x = remaining_x - math.ceil(195 / x_speed)
+                    pred = 195 - remaining_x * x_speed
+        # print(pred)
+        return pred
+
     def move_to(player, pred) : #move platform to predicted position to catch ball 
         if player == '1P':
-            if scene_info["platform_1P"][0]+20  > (pred-10) and scene_info["platform_1P"][0]+20 < (pred+10): return 0 # NONE
-            elif scene_info["platform_1P"][0]+20 <= (pred-10) : return 1 # goes right
+            if scene_info["platform_1P"][0]+18  == (pred) : return 0 # NONE
+            elif scene_info["platform_1P"][0]+18 < (pred) : return 1 # goes right
             else : return 2 # goes left
         else :
             if scene_info["platform_2P"][0]+20  > (pred-10) and scene_info["platform_2P"][0]+20 < (pred+10): return 0 # NONE
@@ -33,20 +63,15 @@ def ml_loop(side: str):
             else : return 2 # goes left
 
     def ml_loop_for_1P(): 
+        if scene_info["ball"][1] == 415:
+            print("=================ball: ", scene_info["ball"][0])
+            # print("=================platform: ", scene_info["platform_1P"][0]+20)
         if scene_info["ball_speed"][1] > 0 : # 球正在向下 # ball goes down
-            x = ( scene_info["platform_1P"][1]-scene_info["ball"][1] ) // scene_info["ball_speed"][1] # 幾個frame以後會需要接  # x means how many frames before catch the ball
-            pred = scene_info["ball"][0]+(scene_info["ball_speed"][0]*x)  # 預測最終位置 # pred means predict ball landing site 
-            bound = pred // 200 # Determine if it is beyond the boundary
-            if (bound > 0): # pred > 200 # fix landing position
-                if (bound%2 == 0) :
-                    pred = pred - bound*200
-                else :
-                    pred = 200 - (pred - 200*bound)
-            elif (bound < 0) : # pred < 0
-                if (bound%2 ==1) :
-                    pred = abs(pred - (bound+1) *200)
-                else :
-                    pred = pred + (abs(bound)*200)
+            x = math.ceil(( scene_info["platform_1P"][1]-5-scene_info["ball"][1] ) / abs(scene_info["ball_speed"][1])) # 幾個frame以後會需要接  # x means how many frames before catch the ball
+            pred = predict_ball(x, scene_info["ball"][0], scene_info["ball_speed"][0])
+            print(x, scene_info["ball"][0], scene_info["ball_speed"][0])
+            print("pred: ", pred)
+            print("-------")
             return move_to(player = '1P',pred = pred)
         else : # 球正在向上 # ball goes up
             return move_to(player = '1P',pred = 100)
