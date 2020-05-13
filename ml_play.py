@@ -61,19 +61,21 @@ def ml_loop(side: str):
         if pred < 0:
             remaining_x = x - math.ceil(scene_info["blocker"][0]/abs(block_speed_x))
             pred = remaining_x * abs(block_speed_x)
-            if pred > 195:
-                remaining_x = remaining_x - math.ceil(195/abs(block_speed_x))
-                pred = 195 - remaining_x * abs(block_speed_x)
-        elif pred > 195:
-            remaining_x = x - math.ceil((195 - scene_info["blocker"][0])/abs(block_speed_x))
-            pred = 195 - remaining_x * abs(block_speed_x)
+            if pred > 170:
+                remaining_x = remaining_x - math.ceil(170/abs(block_speed_x))
+                pred = 170 - remaining_x * abs(block_speed_x)
+        elif pred > 170:
+            remaining_x = x - math.ceil((170 - scene_info["blocker"][0])/abs(block_speed_x))
+            pred = 170 - remaining_x * abs(block_speed_x)
             if pred < 0:
-                remaining_x = remaining_x - math.ceil(195/abs(block_speed_x))
+                remaining_x = remaining_x - math.ceil(170/abs(block_speed_x))
                 pred = remaining_x * abs(block_speed_x)
         return pred
 
     def pred_hit_side():
         x = math.ceil((235-80) / scene_info["ball_speed"][1])
+        ball_pred_y = 80 + x * scene_info["ball_speed"][1]
+        print(f"ball_pred_y: {ball_pred_y}")
         for i in range(math.ceil(20/scene_info["ball_speed"][1])):
             ball_pred = predict_ball(x+i, scene_info["ball"][0], scene_info["ball_speed"][0])
             block_pred = predict_block(x+i)
@@ -108,6 +110,7 @@ def ml_loop(side: str):
     def ml_loop_for_1P(): 
         if scene_info["ball"][1] >= 240 and scene_info["ball"][1] <=260 and scene_info["ball_speed"][1] > 0:
             print("ball_x: , block_x: ", scene_info["ball"][0], scene_info["blocker"][0])
+            print("ball_y", scene_info["ball"][1])
         if scene_info["ball_speed"][1] > 0 : # 球正在向下 # ball goes down
             if scene_info["ball"][1] == 80: 
                 pred_hit_side()
