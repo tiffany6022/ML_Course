@@ -114,7 +114,7 @@ def ml_loop(side: str):
             return False, 0
 
     def pred_hit_bottom(ball_x):
-        dontmove = False
+        dont_move = False
         x = math.ceil((415-260) / abs(scene_info["ball_speed"][1]))
         if abs(scene_info["ball_speed"][0]) == abs(scene_info["ball_speed"][1]):
             ball_speedx = scene_info["ball_speed"][0]
@@ -131,12 +131,12 @@ def ml_loop(side: str):
         if ball_pred > (block_pred-5) and ball_pred < (block_pred+30):
             print("!!!!!!!!!!!!!!!slicing!")
             if block_pred < 40 or block_pred > 130:
-                dontmove = True
+                dont_move = True
             else:
-                dontmove = False
-            return True, dontmove
+                dont_move = False
+            return True, dont_move
         else:
-            return False, dontmove
+            return False, dont_move
 
     def use_slicing(ball_x): # (ball_x,415)
         if scene_info["ball_speed"][1] == 0 or abs(scene_info["ball_speed"][1]) > 15: return False
@@ -160,6 +160,7 @@ def ml_loop(side: str):
             else : return 2 # goes left
 
     def ml_loop_for_1P():
+        print(dontmove)
         if scene_info["ball"][1] >= 235 and scene_info["ball"][1] <=260 and scene_info["ball_speed"][1] > 0:   # side
         # if scene_info["ball"][1] >= 230 and scene_info["ball"][1] <=260 and scene_info["ball_speed"][1] < 0: # bottom
             print("ball_x: , block_x: ", scene_info["ball"][0], scene_info["blocker"][0])
@@ -233,7 +234,7 @@ def ml_loop(side: str):
             hit_blocker_side, ball_80_position = pred_hit_side()
 
         if side == '1P' and scene_info["ball_speed"][1] < 0 and scene_info["ball"][1] == 415:
-            dontmove = pred_hit_bottom(scene_info["ball"][1])
+            dontmove = pred_hit_bottom(scene_info["ball"][1])[1]
         elif scene_info["ball_speed"] == 0:
             dontmove = False
 
