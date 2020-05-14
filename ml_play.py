@@ -28,6 +28,7 @@ def ml_loop(side: str):
     ball_80_position = 0
     block_position = []
     block_speed_x = 0
+    dontmove = False
 
     def predict_ball(x, ball_position, ball_speed):
     # print(scene_info)
@@ -113,6 +114,7 @@ def ml_loop(side: str):
             return False, 0
 
     def pred_hit_bottom(ball_x):
+        dontmove = False
         x = math.ceil((415-260) / abs(scene_info["ball_speed"][1]))
         if abs(scene_info["ball_speed"][0]) == abs(scene_info["ball_speed"][1]):
             ball_speedx = scene_info["ball_speed"][0]
@@ -128,13 +130,17 @@ def ml_loop(side: str):
         # print(f"============ball_pred: {ball_pred}, block_pred: {block_pred}")
         if ball_pred > (block_pred-5) and ball_pred < (block_pred+30):
             print("!!!!!!!!!!!!!!!slicing!")
-            return True
+            if block_pred < 40 or block_pred > 130:
+                dontmove = True
+            else:
+                dontmove = False
+            return True, dontmove
         else:
-            return False
+            return False, dontmove
 
     def use_slicing(ball_x): # (ball_x,415)
         if scene_info["ball_speed"][1] == 0 or abs(scene_info["ball_speed"][1]) > 15: return False
-        return pred_hit_bottom(ball_x)
+        return pred_hit_bottom(ball_x)[0]
 
 
     def move_to(player, pred) : # move platform to predicted position to catch ball 
@@ -168,6 +174,8 @@ def ml_loop(side: str):
             pred = predict_ball(x, scene_info["ball"][0], scene_info["ball_speed"][0])
             pred = pred[0]
             return move_to(player = '1P',pred = pred)
+        # elif scene_info["ball_speed"][1] < 0 and dontmove:
+        #     return move_to(player = '1P',pred = scene_info["ball"][0])
         else : # 球正在向上 # ball goes up
             return move_to(player = '1P',pred = 100)
 
@@ -208,6 +216,7 @@ def ml_loop(side: str):
             ball_80_position = 0
             block_position = []
             block_speed_x = 0
+            dontmove = False
 
             # 3.2.1 Inform the game process that
             #       the ml process is ready for the next round
@@ -222,6 +231,11 @@ def ml_loop(side: str):
 
         if scene_info["ball"][1] == 80 and scene_info["ball_speed"][1] > 0:
             hit_blocker_side, ball_80_position = pred_hit_side()
+
+        if side == '1P' and scene_info["ball_speed"][1] < 0 and scene_info["ball"][1] == 415:
+            dontmove = pred_hit_bottom(scene_info["ball"][1])
+        elif scene_info["ball_speed"] == 0:
+            dontmove = False
 
         # 3.4 Send the instruction for this frame to the game process
         if not ball_served:
